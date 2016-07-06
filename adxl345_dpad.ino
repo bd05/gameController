@@ -11,8 +11,16 @@
 /* Assign a unique ID to this sensor at the same time */
 Adafruit_ADXL345_Unified accel = Adafruit_ADXL345_Unified(12345);
 
+//on/off button for accelerometer d-pad
+int dPadFlag = HIGH;
+int reading;
+int previous = LOW;
+long debounce = 200;
+long time = 0; 
 int dPadEnable = 11; //for turning the d-pad on, so you can test without losing control of the keyboard
 int ledPin = A5;
+
+//main buttons
 int xButton = A3; //A button on gamecube
 int zButton = A4; //B button on gamecube
 int aButton = 6; //A button on gamecube
@@ -25,20 +33,6 @@ void displaySensorDetails(void)
 {
   sensor_t sensor;
   accel.getSensor(&sensor);
-}
-
-void displayDataRate(void)
-{
-  Serial.print  ("Data Rate:    "); 
-  Serial.print  ("100 ");        
-  Serial.println(" Hz");  
-}
-
-void displayRange(void)
-{
-  Serial.print  ("Range:         +/- "); 
-  Serial.print  ("2 "); 
-  Serial.println(" g");  
 }
 
 void setup(void) 
@@ -69,50 +63,37 @@ void setup(void)
     Serial.println("Ooops, no ADXL345 detected ... Check your wiring!");
     while(1);
   }
-
-  /* Set the range to whatever is appropriate for your project */
+  
   accel.setRange(ADXL345_RANGE_2_G);
-  
-  /* Display some basic information on this sensor */
   displaySensorDetails();
-  
-  /* Display additional settings (outside the scope of sensor_t) */
-  displayDataRate();
-  displayRange();
   Serial.println("");
 }
 
 void loop(void) 
 {
-  /* Get a new sensor event */ 
   sensors_event_t event; 
   accel.getEvent(&event);
-
 
     if (digitalRead(xButton) == 0)  // if the button goes low
   {
     Keyboard.write('x'); // send a 'x' to the computer via Keyboard HID
     //delay(50);  // delay so there aren't a kajillion x's
   }
-
     if (digitalRead(zButton) == 0) 
   {
     Keyboard.write('z');
     //delay(50);  // delay so there aren't a kajillion z's
   }
-  
     if (digitalRead(aButton) == 0) 
   {
     Keyboard.write('a');  
     //delay(50);  // delay so there aren't a kajillion z's
   }
-  
     if (digitalRead(sButton) == 0) 
   {
     Keyboard.write('s');
     //delay(50);  // delay so there aren't a presses
   }
-
     if (digitalRead(startButton) == 0)
   {
     Keyboard.write(ENTER_KEY); 
@@ -124,43 +105,43 @@ void loop(void)
   Serial.print("Y: "); Serial.print(event.acceleration.y); Serial.print("  ");
   Serial.print("Z: "); Serial.print(event.acceleration.z); Serial.print("  ");Serial.println("m/s^2 ");*/
 
-  processAccelerometer(event.acceleration.x,event.acceleration.y, event.acceleration.z);  // Work with the read data
-  
-  //delay(10); //maybe take out the delay for real gameplay
+  reading = digitalRead(dPadEnable);
+  if (reading == HIGH && previous == LOW && millis() - time > debounce) {
+    if (dPadFlag == HIGH)
+      dPadFlag = LOW;
+    else
+      dPadFlag = HIGH;
+
+    time = millis();    
+  }
+  previous = reading;
+  processAccelerometer(event.acceleration.x,event.acceleration.y, event.acceleration.z); 
+  //delay(10); //vary delay based on demands
 }
 
 
 void processAccelerometer(int16_t XReading, int16_t YReading, int16_t ZReading)
 {
-  if (digitalRead(dPadEnable) == 0){
-    //Serial.print("d-pad mode on \n");
+  if (dPadFlag == HIGH ){
     digitalWrite(ledPin, HIGH);
-      if( XReading > 4 ){
+      if( XReading > 3.75 ){
         Keyboard.write(KEY_LEFT_ARROW);
-        //Serial.print("going left \n");
       }
-
       if( XReading < -5 ){
         Keyboard.write(KEY_RIGHT_ARROW);
-        //Serial.print("going right \n");
       }
-
       if( YReading < -15 ){
         Keyboard.write(KEY_UP_ARROW);
-        //Serial.print("going up \n");
       }
-
       if( YReading > -6 ){
         Keyboard.write(KEY_DOWN_ARROW);
-        //Serial.print("going down \n");
       }
   }
 
   else{
     digitalWrite(ledPin, LOW);
+    return;
   }
-
-  
 }
 
 
