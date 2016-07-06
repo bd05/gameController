@@ -6,13 +6,19 @@
 #define KEY_DOWN_ARROW 0xD9
 #define KEY_LEFT_ARROW 0xD8
 #define KEY_RIGHT_ARROW 0xD7
+#define ENTER_KEY 0xB0
 
 /* Assign a unique ID to this sensor at the same time */
 Adafruit_ADXL345_Unified accel = Adafruit_ADXL345_Unified(12345);
 
-int dPadEnable = 12; //for turning the d-pad on, so you can test without losing control of the keyboard
+int dPadEnable = 11; //for turning the d-pad on, so you can test without losing control of the keyboard
 int ledPin = A5;
-int zButton = 6;
+int xButton = A4; //A button on gamecube
+int zButton = A3; //B button on gamecube
+int aButton = 6; //A button on gamecube
+int sButton = 9; //A button on gamecube
+int startButton = 10; //A button on gamecube
+
 
 
 void displaySensorDetails(void)
@@ -39,8 +45,16 @@ void setup(void)
 {
   pinMode(dPadEnable, INPUT_PULLUP);
   pinMode(ledPin, OUTPUT);
+  pinMode(xButton, INPUT);  
+  digitalWrite(xButton, HIGH);
   pinMode(zButton, INPUT);  
   digitalWrite(zButton, HIGH);  
+  pinMode(aButton, INPUT);  
+  digitalWrite(aButton, HIGH);
+  pinMode(sButton, INPUT);  
+  digitalWrite(sButton, HIGH);
+  pinMode(startButton, INPUT);  
+  digitalWrite(startButton, HIGH);
   
 #ifndef ESP8266
   while (!Serial); // for Leonardo/Micro/Zero
@@ -74,10 +88,35 @@ void loop(void)
   sensors_event_t event; 
   accel.getEvent(&event);
 
-    if (digitalRead(zButton) == 0)  // if the button goes low
+
+    if (digitalRead(xButton) == 0)  // if the button goes low
   {
-    Keyboard.write('x');  // send a 'z' to the computer via Keyboard HID
+    Keyboard.write('x'); // send a 'x' to the computer via Keyboard HID
+    //delay(50);  // delay so there aren't a kajillion x's
+  }
+
+    if (digitalRead(zButton) == 0) 
+  {
+    Keyboard.write('z');
     //delay(50);  // delay so there aren't a kajillion z's
+  }
+  
+    if (digitalRead(aButton) == 0) 
+  {
+    Keyboard.write('a');  
+    //delay(50);  // delay so there aren't a kajillion z's
+  }
+  
+    if (digitalRead(sButton) == 0) 
+  {
+    Keyboard.write('s');
+    //delay(50);  // delay so there aren't a presses
+  }
+
+    if (digitalRead(startButton) == 0)
+  {
+    Keyboard.write(ENTER_KEY); 
+    //delay(50);  // delay so there aren't a kajillion key presses
   }
  
   /* Display the results (acceleration is measured in m/s^2) */
