@@ -13,8 +13,8 @@ Adafruit_ADXL345_Unified accel = Adafruit_ADXL345_Unified(12345);
 
 int dPadEnable = 11; //for turning the d-pad on, so you can test without losing control of the keyboard
 int ledPin = A5;
-int xButton = A4; //A button on gamecube
-int zButton = A3; //B button on gamecube
+int xButton = A3; //A button on gamecube
+int zButton = A4; //B button on gamecube
 int aButton = 6; //A button on gamecube
 int sButton = 9; //A button on gamecube
 int startButton = 10; //A button on gamecube
