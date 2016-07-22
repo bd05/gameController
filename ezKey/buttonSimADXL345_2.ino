@@ -6,38 +6,30 @@
 Adafruit_ADXL345_Unified accel = Adafruit_ADXL345_Unified(12345);
 
 //on/off button for accelerometer d-pad
-/*int testFlag = HIGH;
+int testFlag = HIGH;
 int reading;
 int previous = LOW;
 long debounce = 200;
 long time = 0; 
 int testEnableButton = 11; //for turning the d-pad on, so you can test without losing control of the keyboard
-int ledPin = A5;*/
+int ledPin = 13;
 
 //button press simulation
-int RCtxBtn = A2;
-
+int up = A2;
+int down = 8;
+int left = 10;
+int right = 9;
 
 void displaySensorDetails(void)
 {
   sensor_t sensor;
   accel.getSensor(&sensor);
-  Serial.println("------------------------------------");
-  Serial.print  ("Sensor:       "); Serial.println(sensor.name);
-  Serial.print  ("Driver Ver:   "); Serial.println(sensor.version);
-  Serial.print  ("Unique ID:    "); Serial.println(sensor.sensor_id);
-  Serial.print  ("Max Value:    "); Serial.print(sensor.max_value); Serial.println(" m/s^2");
-  Serial.print  ("Min Value:    "); Serial.print(sensor.min_value); Serial.println(" m/s^2");
-  Serial.print  ("Resolution:   "); Serial.print(sensor.resolution); Serial.println(" m/s^2");  
-  Serial.println("------------------------------------");
-  Serial.println("");
-  delay(50);
 }
 
 void setup(void) 
 {
- /* pinMode(testEnableButton, INPUT_PULLUP);
-  pinMode(ledPin, OUTPUT);*/
+  pinMode(testEnableButton, INPUT_PULLUP);
+  pinMode(ledPin, OUTPUT);
   
 #ifndef ESP8266
   while (!Serial); // for Leonardo/Micro/Zero
@@ -68,7 +60,7 @@ void loop(void)
   Serial.print("Y: "); Serial.print(event.acceleration.y); Serial.print("  ");
   Serial.print("Z: "); Serial.print(event.acceleration.z); Serial.print("  ");Serial.println("m/s^2 ");
 
-  /*reading = digitalRead(testEnableButton);
+  reading = digitalRead(testEnableButton);
   if (reading == HIGH && previous == LOW && millis() - time > debounce) {
     if (testFlag == HIGH)
       testFlag = LOW;
@@ -77,27 +69,49 @@ void loop(void)
 
     time = millis();    
   }
-  previous = reading;*/
+  previous = reading;
   processAccelerometer(event.acceleration.x,event.acceleration.y, event.acceleration.z); 
+  //delay(10); //vary delay based on demands
 }
 
 
 void processAccelerometer(int16_t XReading, int16_t YReading, int16_t ZReading)
 {
-  /*if (testFlag == HIGH ){
-    digitalWrite(ledPin, HIGH);*/
-      if( YReading > 4 ){
-          Serial.println("go up");
-          digitalWrite(RCtxBtn, LOW); // RCtxBtn is the number of the digital pin
-          pinMode(RCtxBtn, OUTPUT);  // Pull the signal low to activate button
+  if (testFlag == HIGH ){
+    digitalWrite(ledPin, HIGH);
+      if( XReading > 3.75 ){
+          digitalWrite(left, LOW); // RCtxBtn is the number of the digital pin
+          pinMode(left, OUTPUT);  // Pull the signal low to activate button
           delay(500);  // Wait half a second
-          pinMode(RCtxBtn, INPUT);  // Release the button.
+          pinMode(left, INPUT);  // Release the button.
           delay(500);  // Wait half a second
-         }
-  //}
+      }
+      if( XReading < -5 ){
+          digitalWrite(right, LOW); // RCtxBtn is the number of the digital pin
+          pinMode(right, OUTPUT);  // Pull the signal low to activate button
+          delay(500);  // Wait half a second
+          pinMode(right, INPUT);  // Release the button.
+          delay(500);  // Wait half a second
+      }
+      if( YReading < -15 ){
+          //Serial.println("go up");
+          digitalWrite(up, LOW); // RCtxBtn is the number of the digital pin
+          pinMode(up, OUTPUT);  // Pull the signal low to activate button
+          delay(500);  // Wait half a second
+          pinMode(up, INPUT);  // Release the button.
+          delay(500);  // Wait half a second
+      }
+      if( YReading > -6 ){
+          digitalWrite(down, LOW); // RCtxBtn is the number of the digital pin
+          pinMode(down, OUTPUT);  // Pull the signal low to activate button
+          delay(500);  // Wait half a second
+          pinMode(down, INPUT);  // Release the button.
+          delay(500);  // Wait half a second
+      }
+  }
 
   else{
-    //digitalWrite(ledPin, LOW);
+    digitalWrite(ledPin, LOW);
     return;
   }
 }
