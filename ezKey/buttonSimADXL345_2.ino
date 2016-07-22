@@ -56,9 +56,9 @@ void loop(void)
   accel.getEvent(&event);
  
   /* Display the results (acceleration is measured in m/s^2) */
-  Serial.print("X: "); Serial.print(event.acceleration.x); Serial.print("  ");
+  /*Serial.print("X: "); Serial.print(event.acceleration.x); Serial.print("  ");
   Serial.print("Y: "); Serial.print(event.acceleration.y); Serial.print("  ");
-  Serial.print("Z: "); Serial.print(event.acceleration.z); Serial.print("  ");Serial.println("m/s^2 ");
+  Serial.print("Z: "); Serial.print(event.acceleration.z); Serial.print("  ");Serial.println("m/s^2 ");*/
 
   reading = digitalRead(testEnableButton);
   if (reading == HIGH && previous == LOW && millis() - time > debounce) {
@@ -82,31 +82,31 @@ void processAccelerometer(int16_t XReading, int16_t YReading, int16_t ZReading)
       if( XReading > 3.75 ){
           digitalWrite(left, LOW); // RCtxBtn is the number of the digital pin
           pinMode(left, OUTPUT);  // Pull the signal low to activate button
-          delay(500);  // Wait half a second
+          delay(100);  // Wait half a second
           pinMode(left, INPUT);  // Release the button.
-          delay(500);  // Wait half a second
+          delay(100);  // Wait half a second
       }
       if( XReading < -5 ){
           digitalWrite(right, LOW); // RCtxBtn is the number of the digital pin
           pinMode(right, OUTPUT);  // Pull the signal low to activate button
-          delay(500);  // Wait half a second
+          delay(100);  // Wait half a second
           pinMode(right, INPUT);  // Release the button.
-          delay(500);  // Wait half a second
+          delay(100);  // Wait half a second
       }
       if( YReading < -15 ){
           //Serial.println("go up");
           digitalWrite(up, LOW); // RCtxBtn is the number of the digital pin
           pinMode(up, OUTPUT);  // Pull the signal low to activate button
-          delay(500);  // Wait half a second
+          delay(100);  // Wait half a second
           pinMode(up, INPUT);  // Release the button.
-          delay(500);  // Wait half a second
+          delay(100);  // Wait half a second
       }
       if( YReading > -6 ){
           digitalWrite(down, LOW); // RCtxBtn is the number of the digital pin
           pinMode(down, OUTPUT);  // Pull the signal low to activate button
-          delay(500);  // Wait half a second
+          delay(100);  // Wait half a second
           pinMode(down, INPUT);  // Release the button.
-          delay(500);  // Wait half a second
+          delay(100);  // Wait half a second
       }
   }
 
