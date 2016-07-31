@@ -1,6 +1,31 @@
 // var obd = require('obd');
 // obd.connect();
 
+var express = require('express');
+var app = express();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
+server.listen(8080);
+ console.log('Magic happens on port 8080.');
+
+app.use(express.static('/'));
+
+app.get('/', function (req, res) {
+  res.sendFile(__dirname + '/index.html');
+});
+
+var testData;
+
+io.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    testData = data;
+    console.log("data to send: " + data);
+  });
+});
+
+//bluetooth
 var BluetoothSerialPort = require("bluetooth-serial-port").BluetoothSerialPort;
 var myBtPort = new BluetoothSerialPort();
 var dataBuffer = "";
@@ -8,7 +33,7 @@ var dataBuffer = "";
 myBtPort.on('found', function (address, name) {
     console.log('Found: ' + address + ' with name ' + name);
 
-    if(name != "ubuntu-0" && name != "OBDII") { return; }
+    //if(name != "ubuntu-0" && name != "OBDII") { return; }
 
     myBtPort.findSerialPortChannel(address, function(channel) {
         console.log('Found RFCOMM channel for serial port on ' + name + ': ' + channel);
