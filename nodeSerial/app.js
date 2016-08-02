@@ -41,9 +41,23 @@ myBtPort.on('found', function (address, name) {
 
         myBtPort.connect(address, channel, function() {
             console.log('Connected. Receiving data...');
-            myBtPort.on('data', function(buffer) {
+            /*myBtPort.on('data', function(buffer) {
 
+            });*/
+            //from LED example
+            process.stdin.resume();
+            process.stdin.setEncoding('utf8');
+            console.log('Press "1" or "0" and "ENTER" to turn on or off the light.')
+
+            process.stdin.on('data', function (data) {
+                myBtPort.write(data);
             });
+
+            myBtPort.on('data', function(data) {
+                console.log('Received: ' + data);
+            });
+
+
         });
     });
 });
