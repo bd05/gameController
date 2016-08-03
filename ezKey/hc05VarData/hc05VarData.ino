@@ -17,6 +17,10 @@ int upThreshold = -15;
 int downThreshold = -6;
 int leftThreshold = 4;
 int rightThreshold = -5;
+//node
+char val;         // variable to receive data from the serial port
+unsigned int timeout=0;
+unsigned char state=0;
 
 //on/off button for accelerometer d-pad
 int testFlag = HIGH;
@@ -33,6 +37,26 @@ int down = 12;
 int left = 10;
 int right = 9;
 
+// Timer2 service
+ISR(TIMER2_OVF_vect) { 
+  TCNT2 = 0;
+  timeout++;
+  if (timeout>61) {
+    state=1;
+    timeout=0;
+  }
+}
+ 
+// initialize the timer 2 service
+void init_timer2(void) {
+  TCCR2A |= (1 << WGM21) | (1 << WGM20);   
+  TCCR2B |= 0x07;                         // by clk/1024
+  ASSR |= (0<<AS2);                       // Use internal clock - external clock not used in Arduino
+  TIMSK2 |= 0x01;                         //Timer2 Overflow Interrupt Enable
+  TCNT2 = 0;
+  sei();   
+}
+
 void displaySensorDetails(void)
 {
   sensor_t sensor;
@@ -47,7 +71,7 @@ void setup(void)
   //hc-05
   pinMode(bluePin,OUTPUT);
   hc05Serial.begin(9600);
-  hc05Serial.println("Bluetooth On please press 1 or 0 blink LED ..");
+  hc05Serial.println("node Bluetooth");
   
 #ifndef ESP8266
   while (!Serial); // for Leonardo/Micro/Zero
@@ -66,6 +90,10 @@ void setup(void)
   accel.setRange(ADXL345_RANGE_2_G);
   displaySensorDetails();
   Serial.println("");
+
+  // interrupt for reading from the bluetooth connection 
+  attachInterrupt(0, cleantime, FALLING);
+  init_timer2();
 }
 
 void loop(void) 
@@ -89,14 +117,17 @@ void loop(void)
   }
   previous = testButtonReading;
   processAccelerometer(event.acceleration.x,event.acceleration.y, event.acceleration.z); 
-  //delay(10); //vary delay based on demands
 
-
-  //hc05
-     if (hc05Serial.available())
-     {
-        readHc05();
-     }
+  switch(state) {
+    case 0:
+      // no bt connection, do nothing
+      break;
+   
+    case 1:
+      // when there is a bt connection enter the control function
+      control(); 
+      break;
+  }
   
 }
 
@@ -163,4 +194,35 @@ void readHc05(){
         Serial.println(x);        
 }
 
+// function for controlling the led
+void control(void) {
+  if (hc05Serial.available()) {               // if data is available to read
+    //hc05Serial.println("got to control");
+    //Serial.println("got to control normal serial monitor");
+    val = hc05Serial.read();                  // read it and store it in 'val'
+    hc05Serial.println(val);
+  }
 
+  if (val == '1') {                       // if '1' was received
+    hc05Serial.println('1');                  // display the new value
+    digitalWrite(bluePin, HIGH);           // turn ON the LED
+  } else if (val == '0') { 
+    hc05Serial.println('0');                  // display the new value
+    digitalWrite(bluePin, LOW);            // otherwise turn it OFF
+  } else if (val == 's') {                // if 's' is received display the current status of the led
+    if (digitalRead(bluePin) == HIGH) {
+      hc05Serial.println('1');
+    } else {
+      hc05Serial.println('0');
+    } 
+  }
+  
+  val = ' ';
+    
+  delay(100);                             // wait 100ms for next reading
+}
+
+void cleantime() {
+  timeout=0;
+  state=0;
+}

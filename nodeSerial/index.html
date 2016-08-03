@@ -15,11 +15,51 @@
               var hashCode;
               if (dirDiff == "upEasy"){
                   console.log("sending upEasy");
-                  hashCode = '1';
+                  hashCode = '0';
               }
               if (dirDiff == "upMed"){
                   console.log("sending upMed");
-                  hashCode = '0';
+                  hashCode = '1';
+              }
+              if (dirDiff == "upHard"){
+                  console.log("sending upHard");
+                  hashCode = '2';
+              }
+              if (dirDiff == "downEasy"){
+                  console.log("sending downEasy");
+                  hashCode = '3';
+              }
+              if (dirDiff == "downMed"){
+                  console.log("sending downMed");
+                  hashCode = '4';
+              }
+              if (dirDiff == "downHard"){
+                  console.log("sending downHard");
+                  hashCode = '5';
+              }
+              if (dirDiff == "leftEasy"){
+                  console.log("sending leftEasy");
+                  hashCode = '6';
+              }
+              if (dirDiff == "leftMed"){
+                  console.log("sending leftMed");
+                  hashCode = '7';
+              }
+              if (dirDiff == "leftHard"){
+                  console.log("sending leftHard");
+                  hashCode = '8';
+              }
+              if (dirDiff == "rightEasy"){
+                  console.log("sending rightEasy");
+                  hashCode = '9';
+              }
+              if (dirDiff == "rightMed"){
+                  console.log("sending rightMed");
+                  hashCode = '10';
+              }
+              if (dirDiff == "rightHard"){
+                  console.log("sending rightHard");
+                  hashCode = '11';
               }
               socket.emit('selected difficulty', hashCode);
             }
@@ -40,21 +80,21 @@
           </select>
 
           <h4>Down</h4>
-          <select>
+          <select onchange="changeDiff(this.value)">
             <option value="downEasy">Easy</option>
             <option value="downMed">Medium</option>
             <option value="downHard">Hard</option>
           </select>
 
           <h4>Left</h4>
-          <select>
+          <select onchange="changeDiff(this.value)">
             <option value="leftEasy">Easy</option>
             <option value="leftMed">Medium</option>
             <option value="leftHard">Hard</option>
           </select>
 
           <h4>Right</h4>
-          <select>
+          <select onchange="changeDiff(this.value)">
             <option value="rightEasy">Easy</option>
             <option value="rightMed">Medium</option>
             <option value="rightHard">Hard</option>
