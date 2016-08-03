@@ -110,7 +110,6 @@ void loop(void)
   
 }
 
-
 void processAccelerometer(int16_t XReading, int16_t YReading, int16_t ZReading)
 {
       if( XReading > leftThreshold ){
@@ -165,8 +164,38 @@ void control(void) {
   }
   if (val == '2') {                       // if '1' was received
     hc05Serial.println('-19');                  // display the new value
-    digitalWrite(bluePin, HIGH);           // turn ON the LED
+    digitalWrite(bluePin, LOW);           // turn ON the LED
     upThreshold = -19;
+  }
+  if (val == '3') {                       // if '1' was received
+    hc05Serial.println('-19');                  // display the new value
+    digitalWrite(bluePin, HIGH);           // turn ON the LED
+    downThreshold = -8;
+  }
+  if (val == '4') {                       // if '1' was received
+    hc05Serial.println('-19');                  // display the new value
+    digitalWrite(bluePin, LOW);           // turn ON the LED
+    downThreshold = -6;
+  }
+  if (val == '5') {                       // if '1' was received
+    hc05Serial.println('-4');                  // display the new value
+    digitalWrite(bluePin, HIGH);           // turn ON the LED
+    downThreshold = -4;
+  }
+  if (val == '6') {                       // if '1' was received
+    hc05Serial.println('5');                  // display the new value
+    digitalWrite(bluePin, LOW);           // turn ON the LED
+    leftThreshold = 4.5;
+  }
+  if (val == '7') {                       // if '1' was received
+    hc05Serial.println('7');                  // display the new value
+    digitalWrite(bluePin, HIGH);           // turn ON the LED
+    leftThreshold = 6;
+  }
+  if (val == '8') {                       // if '1' was received
+    hc05Serial.println('9');                  // display the new value
+    digitalWrite(bluePin, LOW);           // turn ON the LED
+    leftThreshold = 7;
   }
   
   val = ' ';
