@@ -7,16 +7,16 @@
 #define txPin 7
 SoftwareSerial hc05Serial(rxPin, txPin); // RX, TX
 
-/* Assign a unique ID to this sensor at the same time */
+/* Assign a unique ID to the accelerometer sensor*/
 Adafruit_ADXL345_Unified accel = Adafruit_ADXL345_Unified(12345);
 
 //hc-05 bluetooth
 int bluePin=13; // led on D13 will show blink on / off
 int BluetoothData;
 int upThreshold = -15;
-int downThreshold = -6;
-int leftThreshold = 4;
-int rightThreshold = -5;
+int downThreshold = -8; //-6;
+int leftThreshold = 4.5;
+int rightThreshold = -5.5;
 //node
 char val;         // variable to receive data from the serial port
 unsigned int timeout=0;
@@ -81,7 +81,7 @@ void setup(void)
   displaySensorDetails();
   Serial.println("");
 
-  // interrupt for reading from the bluetooth connection 
+  // interrupt for reading from the hc-05 bluetooth connection 
   attachInterrupt(0, cleantime, FALLING);
   init_timer2();
 }
@@ -152,55 +152,70 @@ void control(void) {
     hc05Serial.println(val);
   }
 
-  if (val == '0') { 
-    hc05Serial.println('-15');                  // display the new value
-    digitalWrite(bluePin, LOW);            // otherwise turn it OFF
+  if (val == '0') {               //up easy
+    hc05Serial.println('-15');   // display the new value
+    digitalWrite(bluePin, LOW);           
     upThreshold = -15;
   }
-  if (val == '1') {                       // if '1' was received
-    hc05Serial.println('-17');                  // display the new value
-    digitalWrite(bluePin, HIGH);           // turn ON the LED
+  if (val == '1') {                     //up medium                    
+    hc05Serial.println('-17');                  
+    digitalWrite(bluePin, HIGH);           
     upThreshold = -17;
   }
-  if (val == '2') {                       // if '1' was received
-    hc05Serial.println('-19');                  // display the new value
-    digitalWrite(bluePin, LOW);           // turn ON the LED
+  if (val == '2') {                     //up hard                    
+    hc05Serial.println('-19');                  
+    digitalWrite(bluePin, LOW);           
     upThreshold = -19;
   }
-  if (val == '3') {                       // if '1' was received
-    hc05Serial.println('-19');                  // display the new value
-    digitalWrite(bluePin, HIGH);           // turn ON the LED
+  if (val == '3') {                     //down easy               
+    hc05Serial.println('-19');                 
+    digitalWrite(bluePin, HIGH);          
     downThreshold = -8;
   }
-  if (val == '4') {                       // if '1' was received
-    hc05Serial.println('-19');                  // display the new value
-    digitalWrite(bluePin, LOW);           // turn ON the LED
+  if (val == '4') {                       // down medium
+    hc05Serial.println('-19');                 
+    digitalWrite(bluePin, LOW);           
     downThreshold = -6;
   }
-  if (val == '5') {                       // if '1' was received
-    hc05Serial.println('-4');                  // display the new value
-    digitalWrite(bluePin, HIGH);           // turn ON the LED
+  if (val == '5') {                       // down hard
+    hc05Serial.println('-4');                  
+    digitalWrite(bluePin, HIGH);           
     downThreshold = -4;
   }
-  if (val == '6') {                       // if '1' was received
-    hc05Serial.println('5');                  // display the new value
-    digitalWrite(bluePin, LOW);           // turn ON the LED
+  if (val == '6') {                       // left easy
+    hc05Serial.println('5');              
+    digitalWrite(bluePin, LOW);           
     leftThreshold = 4.5;
   }
-  if (val == '7') {                       // if '1' was received
-    hc05Serial.println('7');                  // display the new value
-    digitalWrite(bluePin, HIGH);           // turn ON the LED
+  if (val == '7') {                       // left medium
+    hc05Serial.println('7');                  
+    digitalWrite(bluePin, HIGH);         
     leftThreshold = 6;
   }
-  if (val == '8') {                       // if '1' was received
-    hc05Serial.println('9');                  // display the new value
-    digitalWrite(bluePin, LOW);           // turn ON the LED
+  if (val == '8') {                       // left hard
+    hc05Serial.println('9');              
+    digitalWrite(bluePin, LOW);          
     leftThreshold = 7;
+  }
+    if (val == '9') {                       // right easy
+    hc05Serial.println('-5.5');              
+    digitalWrite(bluePin, LOW);           
+    rightThreshold = -5.5;
+  }
+  if (val == '10') {                       // right medium
+    hc05Serial.println('-7');                  
+    digitalWrite(bluePin, HIGH);         
+    rightThreshold = -10;
+  }
+  if (val == '11') {                       // right hard
+    hc05Serial.println('-9');              
+    digitalWrite(bluePin, LOW);          
+    rightThreshold = -14;
   }
   
   val = ' ';
     
-  delay(100);                             // wait 100ms for next reading
+  delay(100);                     // wait 100ms for next reading
 }
 
 void cleantime() {
