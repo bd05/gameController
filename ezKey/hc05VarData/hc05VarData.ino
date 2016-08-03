@@ -22,14 +22,6 @@ char val;         // variable to receive data from the serial port
 unsigned int timeout=0;
 unsigned char state=0;
 
-//on/off button for accelerometer d-pad
-int testFlag = HIGH;
-int testButtonReading;
-int previous = LOW;
-long debounce = 200;
-long time = 0; 
-int testEnableButton = 11; //for turning the d-pad on, so you can test without losing control of the keyboard
-int ledPin = 2;
 
 //button press simulation
 int up = A2;
@@ -65,8 +57,6 @@ void displaySensorDetails(void)
 
 void setup(void) 
 {
-  pinMode(testEnableButton, INPUT_PULLUP);
-  pinMode(ledPin, OUTPUT);
 
   //hc-05
   pinMode(bluePin,OUTPUT);
@@ -105,17 +95,6 @@ void loop(void)
   /*Serial.print("X: "); Serial.print(event.acceleration.x); Serial.print("  ");
   Serial.print("Y: "); Serial.print(event.acceleration.y); Serial.print("  ");
   Serial.print("Z: "); Serial.print(event.acceleration.z); Serial.print("  ");Serial.println("m/s^2 ");*/
-
-  testButtonReading = digitalRead(testEnableButton);
-  if (testButtonReading == HIGH && previous == LOW && millis() - time > debounce) {
-    if (testFlag == HIGH)
-      testFlag = LOW;
-    else
-      testFlag = HIGH;
-
-    time = millis();    
-  }
-  previous = testButtonReading;
   processAccelerometer(event.acceleration.x,event.acceleration.y, event.acceleration.z); 
 
   switch(state) {
@@ -134,8 +113,6 @@ void loop(void)
 
 void processAccelerometer(int16_t XReading, int16_t YReading, int16_t ZReading)
 {
-  if (testFlag == HIGH ){
-    digitalWrite(ledPin, HIGH);
       if( XReading > leftThreshold ){
           digitalWrite(left, LOW); // RCtxBtn is the number of the digital pin
           pinMode(left, OUTPUT);  // Pull the signal low to activate button
@@ -165,33 +142,6 @@ void processAccelerometer(int16_t XReading, int16_t YReading, int16_t ZReading)
           pinMode(down, INPUT);  // Release the button.
           delay(100);  // Wait half a second
       }
-  }
-
-  else{
-    digitalWrite(ledPin, LOW);
-    return;
-  }
-}
-
-void readHc05(){
-  BluetoothData=hc05Serial.read();
-           if(BluetoothData=='1')
-           {   
-            // if number 1 pressed ....
-            digitalWrite(bluePin,1);
-            hc05Serial.println("LED  On D13 ON ! ");
-           }
-          if (BluetoothData=='0')
-          {
-            // if number 0 pressed ....
-            digitalWrite(bluePin,0);
-            hc05Serial.println("LED  On D13 Off ! ");
-          }
-
-        int x = hc05Serial.parseInt();
-        String str = Serial.readStringUntil('\n');
-        Serial.println(str);
-        Serial.println(x);        
 }
 
 // function for controlling the led
@@ -203,18 +153,20 @@ void control(void) {
     hc05Serial.println(val);
   }
 
-  if (val == '1') {                       // if '1' was received
-    hc05Serial.println('1');                  // display the new value
-    digitalWrite(bluePin, HIGH);           // turn ON the LED
-  } else if (val == '0') { 
-    hc05Serial.println('0');                  // display the new value
+  if (val == '0') { 
+    hc05Serial.println('-15');                  // display the new value
     digitalWrite(bluePin, LOW);            // otherwise turn it OFF
-  } else if (val == 's') {                // if 's' is received display the current status of the led
-    if (digitalRead(bluePin) == HIGH) {
-      hc05Serial.println('1');
-    } else {
-      hc05Serial.println('0');
-    } 
+    upThreshold = -15;
+  }
+  if (val == '1') {                       // if '1' was received
+    hc05Serial.println('-17');                  // display the new value
+    digitalWrite(bluePin, HIGH);           // turn ON the LED
+    upThreshold = -17;
+  }
+  if (val == '2') {                       // if '1' was received
+    hc05Serial.println('-19');                  // display the new value
+    digitalWrite(bluePin, HIGH);           // turn ON the LED
+    upThreshold = -19;
   }
   
   val = ' ';
