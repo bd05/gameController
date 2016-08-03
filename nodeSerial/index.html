@@ -11,8 +11,17 @@
 
             //dropdowns
             function changeDiff(dirDiff){
-              console.log(dirDiff);
-              socket.emit('selected difficulty', dirDiff);
+              //console.log(dirDiff);
+              var hashCode;
+              if (dirDiff == "upEasy"){
+                  console.log("sending upEasy");
+                  hashCode = '1';
+              }
+              if (dirDiff == "upMed"){
+                  console.log("sending upMed");
+                  hashCode = '0';
+              }
+              socket.emit('selected difficulty', hashCode);
             }
 
 

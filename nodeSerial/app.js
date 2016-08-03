@@ -15,14 +15,6 @@ app.get('/', function (req, res) {
 
 var diffSetting;
 
-/*io.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('selected difficulty', function (data) {
-    console.log("difficulty selected: " + data);
-    diffSetting = data;
-  });
-});*/
-
 //bluetooth
 var BluetoothSerialPort = require("bluetooth-serial-port").BluetoothSerialPort;
 var myBtPort = new BluetoothSerialPort();
@@ -38,9 +30,9 @@ myBtPort.on('found', function (address, name) {
         myBtPort.connect(address, channel, function() {
             console.log('Connected. Receiving data...');
 
-            myBtPort.write(new Buffer('1', 'utf-8'), function(err, count) {
+            /*myBtPort.write(new Buffer('1', 'utf-8'), function(err, count) {
                 if (err) console.log('Cannot conect');
-            });
+            });*/
 
             myBtPort.on('data', function(data) {
                 console.log('Received: ' + data);
