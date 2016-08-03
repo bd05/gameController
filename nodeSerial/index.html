@@ -7,11 +7,50 @@
             var socket = io.connect('http://localhost:8080');
             socket.on('news', function (data) {
               console.log(data);
-              socket.emit('my other event', { my: 'data' });
             });
+
+            //dropdowns
+            function changeDiff(dirDiff){
+              console.log(dirDiff);
+              socket.emit('selected difficulty', dirDiff);
+            }
+
+
         </script>
     </head>
     <body>
-        <ul id='messages'></ul>
+        <div class="container">
+          <h2>Bloorview Game Controller</h2>
+          <p>Select the difficulty level of each direction.</p>
+
+          <h4>Up</h4>
+          <select onchange="changeDiff(this.value)">
+            <option value="upEasy">Easy</option>
+            <option value="upMed">Medium</option>
+            <option value="upHard">Hard</option>
+          </select>
+
+          <h4>Down</h4>
+          <select>
+            <option value="downEasy">Easy</option>
+            <option value="downMed">Medium</option>
+            <option value="downHard">Hard</option>
+          </select>
+
+          <h4>Left</h4>
+          <select>
+            <option value="leftEasy">Easy</option>
+            <option value="leftMed">Medium</option>
+            <option value="leftHard">Hard</option>
+          </select>
+
+          <h4>Right</h4>
+          <select>
+            <option value="rightEasy">Easy</option>
+            <option value="rightMed">Medium</option>
+            <option value="rightHard">Hard</option>
+          </select>
+        </div>
+
     </body>
 </html>
