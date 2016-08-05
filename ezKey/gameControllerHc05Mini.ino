@@ -3,8 +3,8 @@
 #include <Adafruit_ADXL345_U.h>
 #include <SoftwareSerial.h>
 
-#define rxPin 8
-#define txPin 7
+#define rxPin 1
+#define txPin 0
 SoftwareSerial hc05Serial(rxPin, txPin); // RX, TX
 
 /* Assign a unique ID to the accelerometer sensor*/
@@ -25,9 +25,9 @@ unsigned char state=0;
 
 //button press simulation
 int up = A2;
-int down = 12;
-int left = 10;
-int right = 9;
+int down = 2;
+int left = 3;
+int right = 4;
 
 // Timer2 service
 ISR(TIMER2_OVF_vect) { 
@@ -100,7 +100,6 @@ void loop(void)
   switch(state) {
     case 0:
       // no bt connection, do nothing
-      digitalWrite(bluePin, LOW); 
       break;
    
     case 1:
@@ -147,71 +146,84 @@ void processAccelerometer(int16_t XReading, int16_t YReading, int16_t ZReading)
 // function for controlling the led
 void control(void) {
   if (hc05Serial.available()) {               // if data is available to read
-    digitalWrite(bluePin, HIGH);  
     //hc05Serial.println("got to control");
     //Serial.println("got to control normal serial monitor");
-    val = hc05Serial.read();                  // read it and store it in 'val'
-    hc05Serial.println(val);
+    /*val = hc05Serial.read();                  // read it and store it in 'val'
+    hc05Serial.println(val);*/
+    val = Serial.read();                  // read it and store it in 'val'
+    Serial.println(val);
   }
 
   if (val == '0') {               //up easy
-    hc05Serial.println('-15');   // display the new value
-    //digitalWrite(bluePin, LOW);           
+    //hc05Serial.println('-15');   // display the new value
+    //Serial.println('-15');
+    digitalWrite(bluePin, LOW);           
     upThreshold = -15;
   }
   if (val == '1') {                     //up medium                    
-    hc05Serial.println('-17');                  
-    //digitalWrite(bluePin, HIGH);           
+    //hc05Serial.println('-17'); 
+    //Serial.println('-17');                 
+    digitalWrite(bluePin, HIGH);           
     upThreshold = -17;
   }
   if (val == '2') {                     //up hard                    
-    hc05Serial.println('-19');                  
-    //digitalWrite(bluePin, LOW);           
+    //hc05Serial.println('-19');
+    //Serial.println('-19');                   
+    digitalWrite(bluePin, LOW);           
     upThreshold = -19;
   }
   if (val == '3') {                     //down easy               
-    hc05Serial.println('-19');                 
-    //digitalWrite(bluePin, HIGH);          
+    //hc05Serial.println('-19');  
+    //Serial.println('-19');                 
+    digitalWrite(bluePin, HIGH);          
     downThreshold = -8;
   }
   if (val == '4') {                       // down medium
-    hc05Serial.println('-19');                 
-    //digitalWrite(bluePin, LOW);           
+    //hc05Serial.println('-19');   
+    //Serial.println('-19');               
+    digitalWrite(bluePin, LOW);           
     downThreshold = -6;
   }
   if (val == '5') {                       // down hard
-    hc05Serial.println('-4');                  
-    //digitalWrite(bluePin, HIGH);           
+    //hc05Serial.println('-4');
+    //Serial.println('-4');                  
+    digitalWrite(bluePin, HIGH);           
     downThreshold = -4;
   }
   if (val == '6') {                       // left easy
-    hc05Serial.println('5');              
-    //digitalWrite(bluePin, LOW);           
+    //hc05Serial.println('5'); 
+    //Serial.println('5');             
+    digitalWrite(bluePin, LOW);           
     leftThreshold = 4.5;
   }
   if (val == '7') {                       // left medium
-    hc05Serial.println('7');                  
-    //digitalWrite(bluePin, HIGH);         
+    //hc05Serial.println('6');
+    //Serial.println('6');                   
+    digitalWrite(bluePin, HIGH);         
     leftThreshold = 6;
   }
   if (val == '8') {                       // left hard
-    hc05Serial.println('9');              
-    //digitalWrite(bluePin, LOW);          
+    //hc05Serial.println('7');   
+    //Serial.println('7');             
+    digitalWrite(bluePin, LOW);          
     leftThreshold = 7;
   }
     if (val == '9') {                       // right easy
-    hc05Serial.println('-5.5');              
-    //digitalWrite(bluePin, LOW);           
+    //hc05Serial.println('-5.5');
+    //Serial.println('-5.5');               
+    digitalWrite(bluePin, LOW);           
     rightThreshold = -5.5;
   }
   if (val == '10') {                       // right medium
-    hc05Serial.println('-7');                  
-    //digitalWrite(bluePin, HIGH);         
+    //hc05Serial.println('-10'); 
+    //Serial.println('-10');                    
+    digitalWrite(bluePin, HIGH);         
     rightThreshold = -10;
   }
   if (val == '11') {                       // right hard
-    hc05Serial.println('-9');              
-    //digitalWrite(bluePin, LOW);          
+    //hc05Serial.println('-14'); 
+    //Serial.println('-14');               
+    digitalWrite(bluePin, LOW);          
     rightThreshold = -14;
   }
   
