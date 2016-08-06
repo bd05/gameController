@@ -3,9 +3,9 @@
 #include <Adafruit_ADXL345_U.h>
 #include <SoftwareSerial.h>
 
-#define rxPin 1
+/*#define rxPin 1
 #define txPin 0
-SoftwareSerial hc05Serial(rxPin, txPin); // RX, TX
+SoftwareSerial hc05Serial(rxPin, txPin); // RX, TX*/
 
 /* Assign a unique ID to the accelerometer sensor*/
 Adafruit_ADXL345_Unified accel = Adafruit_ADXL345_Unified(12345);
@@ -13,10 +13,24 @@ Adafruit_ADXL345_Unified accel = Adafruit_ADXL345_Unified(12345);
 //hc-05 bluetooth
 int bluePin=13; // led on D13 will show blink on / off
 int BluetoothData;
-int upThreshold = -15;
-int downThreshold = -8; //-6;
-int leftThreshold = 4.5;
-int rightThreshold = -5.5;
+int upEasy = -13;
+int upMed = -17;
+int upHard = -19;
+int downEasy = -8;
+int downMed = -6;
+int downHard = -4;
+int leftEasy = 3.5;
+int leftMed = 6;
+int leftHard = 7;
+int rightEasy = -4;
+int rightMed = -10;
+int rightHard = -14;
+
+int upThreshold = upEasy;
+int downThreshold = downEasy;
+int leftThreshold = leftEasy;
+int rightThreshold = rightEasy;
+
 //node
 char val;         // variable to receive data from the serial port
 unsigned int timeout=0;
@@ -57,29 +71,27 @@ void displaySensorDetails(void)
 
 void setup(void) 
 {
-
   //hc-05
   pinMode(bluePin,OUTPUT);
-  hc05Serial.begin(9600);
-  hc05Serial.println("node Bluetooth");
+  //hc05Serial.begin(9600);
+  //hc05Serial.println("node Bluetooth");
   
 #ifndef ESP8266
   while (!Serial); // for Leonardo/Micro/Zero
 #endif
   Serial.begin(9600);
-  Serial.println("Accelerometer D-pad Test"); Serial.println("");
+  Serial.println("arduino pro mini motion game controller"); Serial.println("");
   
   /* Initialise the sensor */
   if(!accel.begin())
   {
     /* There was a problem detecting the ADXL345 ... check your connections */
-    Serial.println("Ooops, no ADXL345 detected ... Check your wiring!");
+    //Serial.println("Ooops, no ADXL345 detected ... Check your wiring!");
     while(1);
   }
   
   accel.setRange(ADXL345_RANGE_2_G);
   displaySensorDetails();
-  Serial.println("");
 
   // interrupt for reading from the hc-05 bluetooth connection 
   attachInterrupt(0, cleantime, FALLING);
@@ -127,7 +139,6 @@ void processAccelerometer(int16_t XReading, int16_t YReading, int16_t ZReading)
           delay(100);  // Wait half a second
       }
       if( YReading < upThreshold ){
-          //Serial.println("go up");
           digitalWrite(up, LOW); // RCtxBtn is the number of the digital pin
           pinMode(up, OUTPUT);  // Pull the signal low to activate button
           delay(100);  // Wait half a second
@@ -145,9 +156,8 @@ void processAccelerometer(int16_t XReading, int16_t YReading, int16_t ZReading)
 
 // function for controlling the led
 void control(void) {
-  if (hc05Serial.available()) {               // if data is available to read
-    //hc05Serial.println("got to control");
-    //Serial.println("got to control normal serial monitor");
+  //if (hc05Serial.available()) {               // if data is available to read
+    if (Serial.available()) {
     /*val = hc05Serial.read();                  // read it and store it in 'val'
     hc05Serial.println(val);*/
     val = Serial.read();                  // read it and store it in 'val'
@@ -155,76 +165,64 @@ void control(void) {
   }
 
   if (val == '0') {               //up easy
-    //hc05Serial.println('-15');   // display the new value
-    //Serial.println('-15');
+    Serial.println("up easy");    
     digitalWrite(bluePin, LOW);           
-    upThreshold = -15;
+    upThreshold = upEasy;
   }
-  if (val == '1') {                     //up medium                    
-    //hc05Serial.println('-17'); 
-    //Serial.println('-17');                 
+  if (val == '1') {                     //up medium  
+    Serial.println("up med");                                  
     digitalWrite(bluePin, HIGH);           
-    upThreshold = -17;
+    upThreshold = upMed;
   }
-  if (val == '2') {                     //up hard                    
-    //hc05Serial.println('-19');
-    //Serial.println('-19');                   
+  if (val == '2') {                     //up hard    
+    Serial.println("up med");                                   
     digitalWrite(bluePin, LOW);           
-    upThreshold = -19;
+    upThreshold = upHard;
   }
-  if (val == '3') {                     //down easy               
-    //hc05Serial.println('-19');  
-    //Serial.println('-19');                 
+  if (val == '3') {                     //down easy   
+    Serial.println("down easy");                          
     digitalWrite(bluePin, HIGH);          
-    downThreshold = -8;
+    downThreshold = downEasy;
   }
-  if (val == '4') {                       // down medium
-    //hc05Serial.println('-19');   
-    //Serial.println('-19');               
+  if (val == '4') {                       // down medium 
+    Serial.println("down med");             
     digitalWrite(bluePin, LOW);           
-    downThreshold = -6;
+    downThreshold = downMed;
   }
-  if (val == '5') {                       // down hard
-    //hc05Serial.println('-4');
-    //Serial.println('-4');                  
+  if (val == '5') {                       // down hard    
+    Serial.println("down hard");               
     digitalWrite(bluePin, HIGH);           
-    downThreshold = -4;
+    downThreshold = downHard;
   }
-  if (val == '6') {                       // left easy
-    //hc05Serial.println('5'); 
-    //Serial.println('5');             
+  if (val == '6') {                       // left easy   
+    Serial.println("left easy");    
     digitalWrite(bluePin, LOW);           
-    leftThreshold = 4.5;
+    leftThreshold = leftEasy;
   }
-  if (val == '7') {                       // left medium
-    //hc05Serial.println('6');
-    //Serial.println('6');                   
+  if (val == '7') {                       // left medium     
+    Serial.println("left med");              
     digitalWrite(bluePin, HIGH);         
-    leftThreshold = 6;
+    leftThreshold = leftMed;
   }
-  if (val == '8') {                       // left hard
-    //hc05Serial.println('7');   
-    //Serial.println('7');             
+  if (val == '8') {                       // left hard   
+    Serial.println("left hard");          
     digitalWrite(bluePin, LOW);          
-    leftThreshold = 7;
+    leftThreshold = leftHard;
   }
     if (val == '9') {                       // right easy
-    //hc05Serial.println('-5.5');
-    //Serial.println('-5.5');               
+    Serial.println("right easy");               
     digitalWrite(bluePin, LOW);           
-    rightThreshold = -5.5;
+    rightThreshold = rightEasy;
   }
-  if (val == '10') {                       // right medium
-    //hc05Serial.println('-10'); 
-    //Serial.println('-10');                    
+  if (val == '10') {                       // right medium 
+    Serial.println("right med");                   
     digitalWrite(bluePin, HIGH);         
-    rightThreshold = -10;
+    rightThreshold = rightMed;
   }
-  if (val == '11') {                       // right hard
-    //hc05Serial.println('-14'); 
-    //Serial.println('-14');               
+  if (val == '11') {                       // right hard   
+    Serial.println("right hard");           
     digitalWrite(bluePin, LOW);          
-    rightThreshold = -14;
+    rightThreshold = rightHard;
   }
   
   val = ' ';

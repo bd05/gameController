@@ -30,9 +30,9 @@ myBtPort.on('found', function (address, name) {
         myBtPort.connect(address, channel, function() {
             console.log('Connected. Receiving data...');
 
-            /*myBtPort.write(new Buffer('1', 'utf-8'), function(err, count) {
+            myBtPort.write(new Buffer('1', 'utf-8'), function(err, count) {
                 if (err) console.log('Cannot conect');
-            });*/
+            });
 
             myBtPort.on('data', function(data) {
                 console.log('Received: ' + data);
