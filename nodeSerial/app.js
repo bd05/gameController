@@ -7,7 +7,8 @@ var io = require('socket.io')(server);
 server.listen(8080);
  console.log('Magic happens on port 8080.');
 
-app.use(express.static('/'));
+//app.use(express.static('/'));
+app.use("/public", express.static(__dirname + '/public'));
 
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
