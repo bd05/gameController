@@ -45,8 +45,8 @@ as buttonSimADXL345_2.ino, except you can adjust difficulty level with the web c
 
 gameControllerHc05Mini.ino
 hc05VarData.ino except on the Arduino pro mini. Works except the bluetooth serial monitor/windows console goes crazy and keeps receiving and printing garbage data.
-Full functionality of hc05VarData.ino works though. NOTE: Must test wirelessly! Currently using Serial instead of declaring another serial monitor with SoftwareSerial and non-default Tx and Rx pins (not 0 and 1).
-Seems to println more nicely, but REMEMBER TO TEST THIS WIRELESSLY.
+Full functionality of hc05VarData.ino works though. Works wirelessly. Currently using Serial instead of declaring another serial monitor with SoftwareSerial and non-default Tx and Rx pins (not 0 and 1).
+Seems to println more nicely.
 
 Tested on Arduino only so far. Will test on the Arduino mini shortly. In principle, should also work.
 
