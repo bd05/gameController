@@ -9,8 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluetooth-serial-port": "*",
     "express": "^4.14.0",
-    "socket.io": "*",
-    "bluetooth-serial-port": "*"
+    "normalize.css": "^4.2.0",
+    "socket.io": "*"
   }
 }
