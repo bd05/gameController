@@ -3,10 +3,6 @@
 #include <Adafruit_ADXL345_U.h>
 #include <SoftwareSerial.h>
 
-/*#define rxPin 1
-#define txPin 0
-SoftwareSerial hc05Serial(rxPin, txPin); // RX, TX*/
-
 /* Assign a unique ID to the accelerometer sensor*/
 Adafruit_ADXL345_Unified accel = Adafruit_ADXL345_Unified(12345);
 
@@ -132,97 +128,144 @@ void processAccelerometer(int16_t XReading, int16_t YReading, int16_t ZReading)
           delay(100);  // Wait half a second
       }
       if( XReading < rightThreshold ){
-          digitalWrite(right, LOW); // RCtxBtn is the number of the digital pin
-          pinMode(right, OUTPUT);  // Pull the signal low to activate button
-          delay(100);  // Wait half a second
-          pinMode(right, INPUT);  // Release the button.
-          delay(100);  // Wait half a second
+          digitalWrite(right, LOW); 
+          pinMode(right, OUTPUT);  
+          delay(100);  
+          pinMode(right, INPUT);  
+          delay(100);  
       }
       if( YReading < upThreshold ){
-          digitalWrite(up, LOW); // RCtxBtn is the number of the digital pin
-          pinMode(up, OUTPUT);  // Pull the signal low to activate button
-          delay(100);  // Wait half a second
-          pinMode(up, INPUT);  // Release the button.
-          delay(100);  // Wait half a second
+          digitalWrite(up, LOW); // 
+          pinMode(up, OUTPUT);  
+          delay(100);  // 
+          pinMode(up, INPUT);  
+          delay(100);  
       }
       if( YReading > downThreshold ){
-          digitalWrite(down, LOW); // RCtxBtn is the number of the digital pin
-          pinMode(down, OUTPUT);  // Pull the signal low to activate button
-          delay(100);  // Wait half a second
-          pinMode(down, INPUT);  // Release the button.
-          delay(100);  // Wait half a second
+          digitalWrite(down, LOW); 
+          pinMode(down, OUTPUT);  
+          delay(100);  
+          pinMode(down, INPUT);  
+          delay(100);  
       }
 }
 
 // function for controlling the led
 void control(void) {
-  //if (hc05Serial.available()) {               // if data is available to read
+
     if (Serial.available()) {
-    /*val = hc05Serial.read();                  // read it and store it in 'val'
-    hc05Serial.println(val);*/
-    val = Serial.read();                  // read it and store it in 'val'
-    Serial.println(val);
+      val = Serial.read();                  // read it and store it in 'val'
+      Serial.println(val);
   }
 
   if (val == '0') {               //up easy
-    Serial.println("up easy");    
-    digitalWrite(bluePin, LOW);           
+    Serial.println("up easy");             
     upThreshold = upEasy;
+    //blink LED to show success
+    digitalWrite(13, HIGH);   // turn the LED on (HIGH is the voltage level)
+    delay(1000);              // wait for a second
+    digitalWrite(13, LOW);    // turn the LED off by making the voltage LOW
+    delay(1000);  
   }
   if (val == '1') {                     //up medium  
-    Serial.println("up med");                                  
-    digitalWrite(bluePin, HIGH);           
+    Serial.println("up med");                                            
     upThreshold = upMed;
+    //blink LED to show success
+    digitalWrite(13, HIGH);   
+    delay(1000);              
+    digitalWrite(13, LOW);    
+    delay(1000);      
   }
   if (val == '2') {                     //up hard    
-    Serial.println("up med");                                   
-    digitalWrite(bluePin, LOW);           
+    Serial.println("up med");                                              
     upThreshold = upHard;
+    //blink LED to show success
+    digitalWrite(13, HIGH);   
+    delay(1000);              
+    digitalWrite(13, LOW);    
+    delay(1000);  
   }
   if (val == '3') {                     //down easy   
-    Serial.println("down easy");                          
-    digitalWrite(bluePin, HIGH);          
+    Serial.println("down easy");                                   
     downThreshold = downEasy;
+    //blink LED to show success
+    digitalWrite(13, HIGH);  
+    delay(1000);             
+    digitalWrite(13, LOW);   
+    delay(1000);  
   }
   if (val == '4') {                       // down medium 
-    Serial.println("down med");             
-    digitalWrite(bluePin, LOW);           
+    Serial.println("down med");                      
     downThreshold = downMed;
+    //blink LED to show success
+    digitalWrite(13, HIGH);  
+    delay(1000);              
+    digitalWrite(13, LOW);    
+    delay(1000);  
   }
   if (val == '5') {                       // down hard    
-    Serial.println("down hard");               
-    digitalWrite(bluePin, HIGH);           
+    Serial.println("down hard");                        
     downThreshold = downHard;
+    //blink LED to show success
+    digitalWrite(13, HIGH);   
+    delay(1000);             
+    digitalWrite(13, LOW);    
+    delay(1000);  
   }
   if (val == '6') {                       // left easy   
-    Serial.println("left easy");    
-    digitalWrite(bluePin, LOW);           
+    Serial.println("left easy");           
     leftThreshold = leftEasy;
+    //blink LED to show success
+    digitalWrite(13, HIGH);  
+    delay(1000);              
+    digitalWrite(13, LOW);  
+    delay(1000);  
   }
   if (val == '7') {                       // left medium     
-    Serial.println("left med");              
-    digitalWrite(bluePin, HIGH);         
+    Serial.println("left med");                   
     leftThreshold = leftMed;
+    //blink LED to show success
+    digitalWrite(13, HIGH);   
+    delay(1000);            
+    digitalWrite(13, LOW);  
+    delay(1000);  
   }
   if (val == '8') {                       // left hard   
-    Serial.println("left hard");          
-    digitalWrite(bluePin, LOW);          
+    Serial.println("left hard");                  
     leftThreshold = leftHard;
+    //blink LED to show success
+    digitalWrite(13, HIGH);   
+    delay(1000);            
+    digitalWrite(13, LOW);  
+    delay(1000);  
+    
   }
     if (val == '9') {                       // right easy
-    Serial.println("right easy");               
-    digitalWrite(bluePin, LOW);           
+    Serial.println("right easy");                         
     rightThreshold = rightEasy;
+    //blink LED to show success
+    digitalWrite(13, HIGH);   
+    delay(1000);            
+    digitalWrite(13, LOW);  
+    delay(1000);  
   }
   if (val == '10') {                       // right medium 
-    Serial.println("right med");                   
-    digitalWrite(bluePin, HIGH);         
+    Serial.println("right med");                           
     rightThreshold = rightMed;
+    //blink LED to show success
+    digitalWrite(13, HIGH);   
+    delay(1000);            
+    digitalWrite(13, LOW);  
+    delay(1000);  
   }
   if (val == '11') {                       // right hard   
-    Serial.println("right hard");           
-    digitalWrite(bluePin, LOW);          
+    Serial.println("right hard");                   
     rightThreshold = rightHard;
+    //blink LED to show success
+    digitalWrite(13, HIGH);   
+    delay(1000);            
+    digitalWrite(13, LOW);  
+    delay(1000);  
   }
   
   val = ' ';
