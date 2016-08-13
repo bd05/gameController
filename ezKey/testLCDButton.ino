@@ -26,15 +26,15 @@ Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 // Menu variables
 MenuSystem ms;
 Menu mm("");
-Menu mu1("Display");
-MenuItem mu1_mi1("Display1");
-MenuItem mu1_mi2("Display2");
-MenuItem mu1_mi3("Display3");
-Menu mu2("Settings");
-MenuItem mu2_mi1("Settings1");
-MenuItem mu2_mi2("Settings2");
-MenuItem mu2_mi3("Settings3");
-Menu mu3("Left");
+Menu mu1("Up");
+MenuItem mu1_mi1("Easy");
+MenuItem mu1_mi2("Medium");
+MenuItem mu1_mi3("Hard");
+Menu mu2("Down");
+MenuItem mu2_mi1("Easy");
+MenuItem mu2_mi2("Medium");
+MenuItem mu2_mi3("Hard");
+Menu mu3("Left/Right");
 MenuItem mu3_mi1("Easy");
 MenuItem mu3_mi2("Medium");
 MenuItem mu3_mi3("Hard");
@@ -46,57 +46,82 @@ Button BackBtn = Button(2,PULLUP);
 
 bool bRanCallback = false;
 bool bForward = true;
-int line = 10;             // variable for setting display line
+int line = 0;             // variable for setting display line
 
 // Menu callback function
 // In this example all menu items use the same callback.
 
-void on_display1_selected(MenuItem* p_menu_item)
+void on_upEasy_selected(MenuItem* p_menu_item)
 {
-  Serial.println("DISPLAY1 Selected");
+  //Serial.println("DISPLAY1 Selected");
   display.setCursor(0,55);
-  display.print("DISPLAY1 Selected");
+  display.print("upEasy Selected");
   bRanCallback = true;
   bForward = true;
 }
-void on_display2_selected(MenuItem* p_menu_item)
+void on_upMedium_selected(MenuItem* p_menu_item)
 {
-  Serial.println("DISPLAY2 Selected");
+  //Serial.println("DISPLAY2 Selected");
   display.setCursor(0,55);
-  display.print("DISPLAY2 Selected");
+  display.print("upMedium Selected");
   //bRanCallback = false;
   bForward = true;
 }
-void on_display3_selected(MenuItem* p_menu_item)
+void on_upHard_selected(MenuItem* p_menu_item)
 {
-  Serial.println("DISPLAY3 Selected");
+  //Serial.println("DISPLAY3 Selected");
   display.setCursor(0,55);
-  display.print("DISPLAY3 Selected");
+  display.print("upHard Selected");
   bRanCallback = false;
   bForward = true;
 }
 
-void on_settings1_selected(MenuItem* p_menu_item)
+void on_downEasy_selected(MenuItem* p_menu_item)
 {
-  Serial.println("SETTINGS1 Selected");
+  //Serial.println("SETTINGS1 Selected");
   display.setCursor(0,55);
-  display.print("SETTINGS1 Selected");
+  display.print("downEasy Selected");
   bRanCallback = true;
   bForward = true;
 }
-void on_settings2_selected(MenuItem* p_menu_item)
+void on_downMedium_selected(MenuItem* p_menu_item)
 {
-  Serial.println("SETTINGS2 Selected");
+  //Serial.println("SETTINGS2 Selected");
   display.setCursor(0,55);
-  display.print("SETTINGS2 Selected");
+  display.print("downMedium Selected");
   bRanCallback = false;
   bForward = true;
 }
-void on_settings3_selected(MenuItem* p_menu_item)
+void on_downHard_selected(MenuItem* p_menu_item)
 {
-  Serial.println("SETTINGS3 Selected");
+  //Serial.println("SETTINGS3 Selected");
   display.setCursor(0,55);
-  display.print("SETTINGS3 Selected");
+  display.print("downHard Selected");
+  //bRanCallback = false;
+  bForward = true;
+}
+
+void on_horizEasy_selected(MenuItem* p_menu_item)
+{
+  //Serial.println("SETTINGS1 Selected");
+  display.setCursor(0,55);
+  display.print("horizEasy Selected");
+  bRanCallback = true;
+  bForward = true;
+}
+void on_horizMedium_selected(MenuItem* p_menu_item)
+{
+  //Serial.println("SETTINGS2 Selected");
+  display.setCursor(0,55);
+  display.print("horizMedium Selected");
+  bRanCallback = false;
+  bForward = true;
+}
+void on_horizHard_selected(MenuItem* p_menu_item)
+{
+  //Serial.println("SETTINGS3 Selected");
+  display.setCursor(0,55);
+  display.print("horizHard Selected");
   //bRanCallback = false;
   bForward = true;
 }
@@ -105,7 +130,7 @@ void on_settings3_selected(MenuItem* p_menu_item)
 
 void setup()
 {
-  Serial.begin(9600);
+  //Serial.begin(9600);
   
 // by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
   display.begin(SSD1306_SWITCHCAPVCC); 
@@ -115,13 +140,17 @@ void setup()
   
 // Menu setup
   mm.add_menu(&mu1);
-  mu1.add_item(&mu1_mi1, &on_display1_selected);
-  mu1.add_item(&mu1_mi2, &on_display2_selected);
-  mu1.add_item(&mu1_mi3, &on_display3_selected);
+  mu1.add_item(&mu1_mi1, &on_upEasy_selected);
+  mu1.add_item(&mu1_mi2, &on_upMedium_selected);
+  mu1.add_item(&mu1_mi3, &on_upHard_selected);
   mm.add_menu(&mu2);
-  mu2.add_item(&mu2_mi1, &on_settings1_selected);
-  mu2.add_item(&mu2_mi2, &on_settings2_selected);
-  mu2.add_item(&mu2_mi3, &on_settings3_selected);
+  mu2.add_item(&mu2_mi1, &on_downEasy_selected);
+  mu2.add_item(&mu2_mi2, &on_downMedium_selected);
+  mu2.add_item(&mu2_mi3, &on_downHard_selected);
+  mm.add_menu(&mu3);
+  mu3.add_item(&mu3_mi1, &on_horizEasy_selected);
+  mu3.add_item(&mu3_mi2, &on_horizMedium_selected);
+  mu3.add_item(&mu3_mi3, &on_horizHard_selected);
   ms.set_root_menu(&mm);
 }
 
@@ -132,13 +161,13 @@ void loop()
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(WHITE);
-  line=10; //line variable reset
+  line=0; //line variable reset
   //Serial.println("");
   
   
 // Display Title
   //display.setCursor(0,0);
-  //display.println("MENU");
+  //display.println("DIFFICULTY");
   
 // Display the menu
   Menu const* cp_menu = ms.get_current_menu();
@@ -147,13 +176,13 @@ void loop()
   {
     MenuComponent const* cp_m_comp = cp_menu->get_menu_component(i);
     //Serial.print(cp_m_comp->get_name());
-    display.setCursor(0,line);
+    display.setCursor(30,line);
     display.print(cp_m_comp->get_name());
     
     if (cp_menu_sel == cp_m_comp){
       //Serial.print("<<< ");
       display.setCursor(0,line);
-      display.print(">>> ");
+      display.print("> ");
     }
     line=line+10;
     //Serial.println("");
