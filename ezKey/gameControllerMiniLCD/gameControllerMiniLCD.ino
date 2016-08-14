@@ -44,12 +44,12 @@ int upHard = -19;
 int downEasy = -8;
 int downMed = -6;
 int downHard = -4;
-int leftEasy = 3.5;
-int leftMed = 6;
+int leftEasy = 3;
+int leftMed = 5;
 int leftHard = 7;
 int rightEasy = -4;
 int rightMed = -10;
-int rightHard = -14;
+int rightHard = -11;
 
 int upThreshold = upEasy;
 int downThreshold = downEasy;
@@ -231,11 +231,16 @@ void displayLCD(){
 // Menu callback functions
 void on_upEasy_selected(MenuItem* p_menu_item)
 {
-  //Serial.println("DISPLAY1 Selected");
   display.setCursor(0,55);
-  display.print("upEasy Selected");
   bRanCallback = true;
   bForward = true;
+  upThreshold = upEasy;
+  //blink LED to indicate success  
+  digitalWrite(successPin, HIGH);   // turn the LED on (HIGH is the voltage level)
+  delay(1000);              // wait for a second
+  digitalWrite(successPin, LOW);    // turn the LED off by making the voltage LOW
+  delay(1000);              // wait for a second
+  
 }
 void on_upMedium_selected(MenuItem* p_menu_item)
 {
@@ -244,6 +249,12 @@ void on_upMedium_selected(MenuItem* p_menu_item)
   display.print("upMedium Selected");
   //bRanCallback = false;
   bForward = true;
+  upThreshold = upMed;
+  //blink LED to indicate success  
+  digitalWrite(successPin, HIGH);   
+  delay(1000);              
+  digitalWrite(successPin, LOW);   
+  delay(1000);            
 }
 void on_upHard_selected(MenuItem* p_menu_item)
 {
@@ -252,6 +263,12 @@ void on_upHard_selected(MenuItem* p_menu_item)
   display.print("upHard Selected");
   bRanCallback = false;
   bForward = true;
+  upThreshold = upHard;
+  //blink LED to indicate success  
+  digitalWrite(successPin, HIGH);   
+  delay(1000);              
+  digitalWrite(successPin, LOW);   
+  delay(1000);  
 }
 
 void on_downEasy_selected(MenuItem* p_menu_item)
@@ -261,6 +278,12 @@ void on_downEasy_selected(MenuItem* p_menu_item)
   display.print("downEasy Selected");
   bRanCallback = true;
   bForward = true;
+  downThreshold = downEasy;
+  //blink LED to indicate success  
+  digitalWrite(successPin, HIGH);   
+  delay(1000);              
+  digitalWrite(successPin, LOW);   
+  delay(1000);  
 }
 void on_downMedium_selected(MenuItem* p_menu_item)
 {
@@ -269,6 +292,12 @@ void on_downMedium_selected(MenuItem* p_menu_item)
   display.print("downMedium Selected");
   bRanCallback = false;
   bForward = true;
+  downThreshold = downMed;
+  //blink LED to indicate success  
+  digitalWrite(successPin, HIGH);   
+  delay(1000);              
+  digitalWrite(successPin, LOW);   
+  delay(1000);  
 }
 void on_downHard_selected(MenuItem* p_menu_item)
 {
@@ -277,6 +306,12 @@ void on_downHard_selected(MenuItem* p_menu_item)
   display.print("downHard Selected");
   //bRanCallback = false;
   bForward = true;
+  downThreshold = downHard;
+  //blink LED to indicate success  
+  digitalWrite(successPin, HIGH);   
+  delay(1000);              
+  digitalWrite(successPin, LOW);   
+  delay(1000);  
 }
 
 void on_horizEasy_selected(MenuItem* p_menu_item)
@@ -286,6 +321,13 @@ void on_horizEasy_selected(MenuItem* p_menu_item)
   display.print("horizEasy Selected");
   bRanCallback = true;
   bForward = true;
+  leftThreshold = leftEasy;
+  rightThreshold = rightEasy;
+  //blink LED to indicate success  
+  digitalWrite(successPin, HIGH);   
+  delay(1000);              
+  digitalWrite(successPin, LOW);   
+  delay(1000);  
 }
 void on_horizMedium_selected(MenuItem* p_menu_item)
 {
@@ -294,6 +336,13 @@ void on_horizMedium_selected(MenuItem* p_menu_item)
   display.print("horizMedium Selected");
   bRanCallback = false;
   bForward = true;
+  leftThreshold = leftMed;
+  rightThreshold = rightMed;
+  //blink LED to indicate success  
+  digitalWrite(successPin, HIGH);   
+  delay(1000);              
+  digitalWrite(successPin, LOW);   
+  delay(1000);  
 }
 void on_horizHard_selected(MenuItem* p_menu_item)
 {
@@ -302,6 +351,13 @@ void on_horizHard_selected(MenuItem* p_menu_item)
   display.print("horizHard Selected");
   //bRanCallback = false;
   bForward = true;
+  leftThreshold = leftHard;
+  rightThreshold = rightHard;
+  //blink LED to indicate success  
+  digitalWrite(successPin, HIGH);   
+  delay(1000);              
+  digitalWrite(successPin, LOW);   
+  delay(1000);  
 }
 
 
