@@ -17,13 +17,14 @@
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_ADXL345_U.h>
-#include <SoftwareSerial.h>
 
 //DEFINES
 #define OLED_DC 11
 #define OLED_CS 12
-#define OLED_CLK 10
-#define OLED_MOSI 9
+#define OLED_CLK 7 //10  D0
+#define OLED_MOSI 8
+
+
 #define OLED_RESET 13
 Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 
@@ -37,7 +38,7 @@ int left = A2;
 int right = A3;
 
 //diff ctrl
-int successPin=7; // led on D7 will show blink on / off
+int successPin= 6; // led on D13 will show blink on / off
 int upEasy = -13;
 int upMed = -17;
 int upHard = -19;
@@ -147,7 +148,6 @@ void displaySensorDetails(void)
 
 void processAccelerometer(int16_t XReading, int16_t YReading, int16_t ZReading)
 {
-  Serial.println("got to process Accelerometer");
       if( XReading > leftThreshold ){
           digitalWrite(left, LOW); // RCtxBtn is the number of the digital pin
           pinMode(left, OUTPUT);  // Pull the signal low to activate button
