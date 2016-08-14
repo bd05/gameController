@@ -81,8 +81,154 @@ bool bRanCallback = false;
 bool bForward = true;
 int line = 0;             // variable for setting display line
 
-// Menu callback function
+void setup()
+{
+  pinMode(successPin,OUTPUT);
 
+  Serial.begin(9600);
+  Serial.println("arduino pro mini motion game controller"); Serial.println("");
+
+  //accelerometer
+  /* Initialise the sensor */
+  if(!accel.begin())
+  {
+    Serial.println("Ooops, no ADXL345 detected ... Check your wiring!");
+    while(1);
+  }
+  
+  accel.setRange(ADXL345_RANGE_2_G);
+  displaySensorDetails();
+  
+// by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
+  display.begin(SSD1306_SWITCHCAPVCC); 
+  display.display();     // show splashscreen
+  delay(2000);
+  display.clearDisplay();   // clears the screen and buffer
+  
+// Menu setup
+  mm.add_menu(&mu1);
+  mu1.add_item(&mu1_mi1, &on_upEasy_selected);
+  mu1.add_item(&mu1_mi2, &on_upMedium_selected);
+  mu1.add_item(&mu1_mi3, &on_upHard_selected);
+  mm.add_menu(&mu2);
+  mu2.add_item(&mu2_mi1, &on_downEasy_selected);
+  mu2.add_item(&mu2_mi2, &on_downMedium_selected);
+  mu2.add_item(&mu2_mi3, &on_downHard_selected);
+  mm.add_menu(&mu3);
+  mu3.add_item(&mu3_mi1, &on_horizEasy_selected);
+  mu3.add_item(&mu3_mi2, &on_horizMedium_selected);
+  mu3.add_item(&mu3_mi3, &on_horizHard_selected);
+  ms.set_root_menu(&mm);
+}
+
+void loop()
+{
+//OLED LCD set up
+  displayLCD();
+
+  //accelerometer
+  sensors_event_t event; 
+  accel.getEvent(&event);
+ 
+  /* Display the results (acceleration is measured in m/s^2) */
+  /*Serial.print("X: "); Serial.print(event.acceleration.x); Serial.print("  ");
+  Serial.print("Y: "); Serial.print(event.acceleration.y); Serial.print("  ");
+  Serial.print("Z: "); Serial.print(event.acceleration.z); Serial.print("  ");Serial.println("m/s^2 ");*/
+  processAccelerometer(event.acceleration.x,event.acceleration.y, event.acceleration.z); 
+}
+
+//accelerometer
+//set accelerometer
+void displaySensorDetails(void)
+{
+  sensor_t sensor;
+  accel.getSensor(&sensor);
+}
+
+void processAccelerometer(int16_t XReading, int16_t YReading, int16_t ZReading)
+{
+  Serial.println("got to process Accelerometer");
+      if( XReading > leftThreshold ){
+          digitalWrite(left, LOW); // RCtxBtn is the number of the digital pin
+          pinMode(left, OUTPUT);  // Pull the signal low to activate button
+          delay(100);  // Wait half a second
+          pinMode(left, INPUT);  // Release the button.
+          delay(100);  // Wait half a second
+      }
+      if( XReading < rightThreshold ){
+          digitalWrite(right, LOW); 
+          pinMode(right, OUTPUT);  
+          delay(100);  
+          pinMode(right, INPUT);  
+          delay(100);  
+      }
+      if( YReading < upThreshold ){
+          digitalWrite(up, LOW); // 
+          pinMode(up, OUTPUT);  
+          delay(100);  // 
+          pinMode(up, INPUT);  
+          delay(100);  
+      }
+      if( YReading > downThreshold ){
+          digitalWrite(down, LOW); 
+          pinMode(down, OUTPUT);  
+          delay(100);  
+          pinMode(down, INPUT);  
+          delay(100);  
+      }
+}
+
+void displayLCD(){
+  display.display();    
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  line=0; //line variable reset
+  
+// Display the menu
+  Menu const* cp_menu = ms.get_current_menu();
+  MenuComponent const* cp_menu_sel = cp_menu->get_selected();
+  for (int i = 0; i < cp_menu->get_num_menu_components(); ++i)
+  {
+    MenuComponent const* cp_m_comp = cp_menu->get_menu_component(i);
+    //Serial.print(cp_m_comp->get_name());
+    display.setCursor(30,line);
+    display.print(cp_m_comp->get_name());
+    
+    if (cp_menu_sel == cp_m_comp){
+      //Serial.print("<<< ");
+      display.setCursor(0,line);
+      display.print("> ");
+    }
+    line=line+10;
+    //Serial.println("");
+  } 
+ 
+// read the state of the pushbutton value:
+  if(UpBtn.isPressed()){    
+    ms.prev();
+    delay(500); //delay so it doesn't navigate too fast for a human
+  } 
+  
+  if(DownBtn.isPressed()){   
+    ms.next();  
+    delay(500);
+  } 
+
+  if(SelectBtn.isPressed()){   
+    ms.select();
+    delay(500);  
+  } 
+  
+  if(BackBtn.isPressed()){   
+    ms.back();  
+    delay(500);
+  } 
+  //delay(300);
+
+}
+
+// Menu callback functions
 void on_upEasy_selected(MenuItem* p_menu_item)
 {
   //Serial.println("DISPLAY1 Selected");
@@ -158,150 +304,4 @@ void on_horizHard_selected(MenuItem* p_menu_item)
   bForward = true;
 }
 
-//set accelerometer
-void displaySensorDetails(void)
-{
-  sensor_t sensor;
-  accel.getSensor(&sensor);
-}
-
-void setup()
-{
-  pinMode(successPin,OUTPUT);
-
-  Serial.begin(9600);
-  Serial.println("arduino pro mini motion game controller"); Serial.println("");
-
-  //accelerometer
-  /* Initialise the sensor */
-  if(!accel.begin())
-  {
-    Serial.println("Ooops, no ADXL345 detected ... Check your wiring!");
-    while(1);
-  }
-  
-  accel.setRange(ADXL345_RANGE_2_G);
-  displaySensorDetails();
-  
-// by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
-  display.begin(SSD1306_SWITCHCAPVCC); 
-  display.display();     // show splashscreen
-  delay(2000);
-  display.clearDisplay();   // clears the screen and buffer
-  
-// Menu setup
-  mm.add_menu(&mu1);
-  mu1.add_item(&mu1_mi1, &on_upEasy_selected);
-  mu1.add_item(&mu1_mi2, &on_upMedium_selected);
-  mu1.add_item(&mu1_mi3, &on_upHard_selected);
-  mm.add_menu(&mu2);
-  mu2.add_item(&mu2_mi1, &on_downEasy_selected);
-  mu2.add_item(&mu2_mi2, &on_downMedium_selected);
-  mu2.add_item(&mu2_mi3, &on_downHard_selected);
-  mm.add_menu(&mu3);
-  mu3.add_item(&mu3_mi1, &on_horizEasy_selected);
-  mu3.add_item(&mu3_mi2, &on_horizMedium_selected);
-  mu3.add_item(&mu3_mi3, &on_horizHard_selected);
-  ms.set_root_menu(&mm);
-}
-
-void loop()
-{
-//OLED LCD set up
-  displayLCD();
-
-  //accelerometer
-  sensors_event_t event; 
-  accel.getEvent(&event);
- 
-  /* Display the results (acceleration is measured in m/s^2) */
-  /*Serial.print("X: "); Serial.print(event.acceleration.x); Serial.print("  ");
-  Serial.print("Y: "); Serial.print(event.acceleration.y); Serial.print("  ");
-  Serial.print("Z: "); Serial.print(event.acceleration.z); Serial.print("  ");Serial.println("m/s^2 ");*/
-  processAccelerometer(event.acceleration.x,event.acceleration.y, event.acceleration.z); 
-}
-
-//accelerometer
-void processAccelerometer(int16_t XReading, int16_t YReading, int16_t ZReading)
-{
-  Serial.println("got to process Accelerometer");
-      if( XReading > leftThreshold ){
-          digitalWrite(left, LOW); // RCtxBtn is the number of the digital pin
-          pinMode(left, OUTPUT);  // Pull the signal low to activate button
-          delay(100);  // Wait half a second
-          pinMode(left, INPUT);  // Release the button.
-          delay(100);  // Wait half a second
-      }
-      if( XReading < rightThreshold ){
-          digitalWrite(right, LOW); 
-          pinMode(right, OUTPUT);  
-          delay(100);  
-          pinMode(right, INPUT);  
-          delay(100);  
-      }
-      if( YReading < upThreshold ){
-          digitalWrite(up, LOW); // 
-          pinMode(up, OUTPUT);  
-          delay(100);  // 
-          pinMode(up, INPUT);  
-          delay(100);  
-      }
-      if( YReading > downThreshold ){
-          digitalWrite(down, LOW); 
-          pinMode(down, OUTPUT);  
-          delay(100);  
-          pinMode(down, INPUT);  
-          delay(100);  
-      }
-}
-
-void displayLCD(){
-  display.display();    
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(WHITE);
-  line=0; //line variable reset
-  
-// Display the menu
-  Menu const* cp_menu = ms.get_current_menu();
-  MenuComponent const* cp_menu_sel = cp_menu->get_selected();
-  for (int i = 0; i < cp_menu->get_num_menu_components(); ++i)
-  {
-    MenuComponent const* cp_m_comp = cp_menu->get_menu_component(i);
-    //Serial.print(cp_m_comp->get_name());
-    display.setCursor(30,line);
-    display.print(cp_m_comp->get_name());
-    
-    if (cp_menu_sel == cp_m_comp){
-      //Serial.print("<<< ");
-      display.setCursor(0,line);
-      display.print("> ");
-    }
-    line=line+10;
-    //Serial.println("");
-  } 
- 
-// read the state of the pushbutton value:
-  if(UpBtn.isPressed()){    
-    ms.prev();
-    //delay(300); //delay so it doesn't navigate too fast for a human
-  } 
-  
-  if(DownBtn.isPressed()){   
-    ms.next();  
-    //delay(300);
-  } 
-
-  if(SelectBtn.isPressed()){   
-    ms.select();
-    //delay(300);  
-  } 
-  
-  if(BackBtn.isPressed()){   
-    ms.back();  
-    //delay(300);
-  } 
-  delay(300);
-
-}
 
