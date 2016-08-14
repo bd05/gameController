@@ -170,6 +170,20 @@ void setup()
 {
   pinMode(successPin,OUTPUT);
 
+  Serial.begin(9600);
+  Serial.println("arduino pro mini motion game controller"); Serial.println("");
+
+  //accelerometer
+  /* Initialise the sensor */
+  if(!accel.begin())
+  {
+    Serial.println("Ooops, no ADXL345 detected ... Check your wiring!");
+    while(1);
+  }
+  
+  accel.setRange(ADXL345_RANGE_2_G);
+  displaySensorDetails();
+  
 // by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
   display.begin(SSD1306_SWITCHCAPVCC); 
   display.display();     // show splashscreen
@@ -246,11 +260,22 @@ void loop()
   
 // Wait for two seconds so the output is viewable
   delay(500);
+
+  //accelerometer
+    sensors_event_t event; 
+  accel.getEvent(&event);
+ 
+  /* Display the results (acceleration is measured in m/s^2) */
+  /*Serial.print("X: "); Serial.print(event.acceleration.x); Serial.print("  ");
+  Serial.print("Y: "); Serial.print(event.acceleration.y); Serial.print("  ");
+  Serial.print("Z: "); Serial.print(event.acceleration.z); Serial.print("  ");Serial.println("m/s^2 ");*/
+  processAccelerometer(event.acceleration.x,event.acceleration.y, event.acceleration.z); 
 }
 
 //accelerometer
 void processAccelerometer(int16_t XReading, int16_t YReading, int16_t ZReading)
 {
+  Serial.println("got to process Accelerometer");
       if( XReading > leftThreshold ){
           digitalWrite(left, LOW); // RCtxBtn is the number of the digital pin
           pinMode(left, OUTPUT);  // Pull the signal low to activate button
