@@ -209,57 +209,7 @@ void setup()
 void loop()
 {
 //OLED set up
-  display.display();    
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(WHITE);
-  line=0; //line variable reset
-  //Serial.println("");
-  
-  
-// Display Title
-  //display.setCursor(0,0);
-  //display.println("DIFFICULTY");
-  
-// Display the menu
-  Menu const* cp_menu = ms.get_current_menu();
-  MenuComponent const* cp_menu_sel = cp_menu->get_selected();
-  for (int i = 0; i < cp_menu->get_num_menu_components(); ++i)
-  {
-    MenuComponent const* cp_m_comp = cp_menu->get_menu_component(i);
-    //Serial.print(cp_m_comp->get_name());
-    display.setCursor(30,line);
-    display.print(cp_m_comp->get_name());
-    
-    if (cp_menu_sel == cp_m_comp){
-      //Serial.print("<<< ");
-      display.setCursor(0,line);
-      display.print("> ");
-    }
-    line=line+10;
-    //Serial.println("");
-  } 
- 
-// read the state of the pushbutton value:
-  if(UpBtn.isPressed()){    
-    ms.prev(); 
-  } 
-  
-  if(DownBtn.isPressed()){   
-    ms.next();  
-  } 
-
-  if(SelectBtn.isPressed()){   
-    ms.select();  
-  } 
-  
-  if(BackBtn.isPressed()){   
-    ms.back();  
-  } 
- 
-  
-// Wait for two seconds so the output is viewable
-  delay(500);
+  displayLCD();
 
   //accelerometer
     sensors_event_t event; 
@@ -305,3 +255,59 @@ void processAccelerometer(int16_t XReading, int16_t YReading, int16_t ZReading)
           delay(100);  
       }
 }
+
+void displayLCD(){
+  display.display();    
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  line=0; //line variable reset
+  //Serial.println("");
+  
+  
+// Display Title
+  //display.setCursor(0,0);
+  //display.println("DIFFICULTY");
+  
+// Display the menu
+  Menu const* cp_menu = ms.get_current_menu();
+  MenuComponent const* cp_menu_sel = cp_menu->get_selected();
+  for (int i = 0; i < cp_menu->get_num_menu_components(); ++i)
+  {
+    MenuComponent const* cp_m_comp = cp_menu->get_menu_component(i);
+    //Serial.print(cp_m_comp->get_name());
+    display.setCursor(30,line);
+    display.print(cp_m_comp->get_name());
+    
+    if (cp_menu_sel == cp_m_comp){
+      //Serial.print("<<< ");
+      display.setCursor(0,line);
+      display.print("> ");
+    }
+    line=line+10;
+    //Serial.println("");
+  } 
+ 
+// read the state of the pushbutton value:
+  if(UpBtn.isPressed()){    
+    ms.prev();
+    delay(300); //delay so it doesn't navigate too fast for a human
+  } 
+  
+  if(DownBtn.isPressed()){   
+    ms.next();  
+    delay(300);
+  } 
+
+  if(SelectBtn.isPressed()){   
+    ms.select();
+    delay(300);  
+  } 
+  
+  if(BackBtn.isPressed()){   
+    ms.back();  
+    delay(300);
+  } 
+
+}
+
