@@ -31,10 +31,10 @@ Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 Adafruit_ADXL345_Unified accel = Adafruit_ADXL345_Unified(12345);
 
 //button press simulation
-int up = A2;
-int down = 2;
-int left = 3;
-int right = 4;
+int up = A0;
+int down = A1;
+int left = A2;
+int right = A3;
 
 //diff ctrl
 int successPin=7; // led on D7 will show blink on / off
@@ -82,7 +82,6 @@ bool bForward = true;
 int line = 0;             // variable for setting display line
 
 // Menu callback function
-// In this example all menu items use the same callback.
 
 void on_upEasy_selected(MenuItem* p_menu_item)
 {
@@ -208,11 +207,11 @@ void setup()
 
 void loop()
 {
-//OLED set up
+//OLED LCD set up
   displayLCD();
 
   //accelerometer
-    sensors_event_t event; 
+  sensors_event_t event; 
   accel.getEvent(&event);
  
   /* Display the results (acceleration is measured in m/s^2) */
@@ -262,12 +261,6 @@ void displayLCD(){
   display.setTextSize(1);
   display.setTextColor(WHITE);
   line=0; //line variable reset
-  //Serial.println("");
-  
-  
-// Display Title
-  //display.setCursor(0,0);
-  //display.println("DIFFICULTY");
   
 // Display the menu
   Menu const* cp_menu = ms.get_current_menu();
@@ -291,23 +284,24 @@ void displayLCD(){
 // read the state of the pushbutton value:
   if(UpBtn.isPressed()){    
     ms.prev();
-    delay(300); //delay so it doesn't navigate too fast for a human
+    //delay(300); //delay so it doesn't navigate too fast for a human
   } 
   
   if(DownBtn.isPressed()){   
     ms.next();  
-    delay(300);
+    //delay(300);
   } 
 
   if(SelectBtn.isPressed()){   
     ms.select();
-    delay(300);  
+    //delay(300);  
   } 
   
   if(BackBtn.isPressed()){   
     ms.back();  
-    delay(300);
+    //delay(300);
   } 
+  delay(300);
 
 }
 
