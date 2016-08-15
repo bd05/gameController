@@ -23,9 +23,7 @@
 #define OLED_CS 12
 #define OLED_CLK 7 //10  D0
 #define OLED_MOSI 8
-
-
-#define OLED_RESET 13
+#define OLED_RESET 6
 Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 
 /* Assign a unique ID to the accelerometer sensor*/
@@ -38,7 +36,7 @@ int left = A2;
 int right = A3;
 
 //diff ctrl
-int successPin= 6; // led on D13 will show blink on / off
+int successPin= 13; // led on D13 will show blink on / off
 int upEasy = -13;
 int upMed = -17;
 int upHard = -19;
