@@ -74,3 +74,6 @@ Interactive OLED LCD menu. Used it to test that the LCD menu was working.
 What the soldered perfboard circuit is currently using (as of August 15, 2016). D-pad works with ADXL345 accelerometer and EZ-key, Return button works with
 microswitch and EZ-key. You can set the difficulty level for Up, Down, and Left/Right using an OLED LCD screen. The screen is controlled by four buttons:
 up, down, select, back.
+
+Used threads and side lids from:
+http://www.thingiverse.com/thing:12278
